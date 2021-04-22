@@ -11,17 +11,22 @@ npm install react-native-download
 ## Usage
 
 ```js
-import Download from "react-native-download";
+import { DownloadFile } from 'react-native-download';
 
 // ...
 
-const result = await Download.multiply(3, 7);
+setState("downloading")
+const res = await DownloadFile('https://static.mokeycode.com/app/1.jpeg', '1.jpeg')
+setState(res ? 'success' : 'cancel')
+
 ```
 
-## Contributing
-
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
-
-## License
-
-MIT
+## Attention
+Android only provides callback functions only for download completion, not for download failure
+Android need AndroidManifest
+```
+<uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+```
