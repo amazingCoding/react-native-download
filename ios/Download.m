@@ -29,7 +29,13 @@ RCT_EXPORT_METHOD(downloadFile:(NSString *)url name:(NSString *)name callback:(R
       callback(@[[NSNull null]]);
       return;
     }
-    NSURL *fileURL = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@",filePath]];
+    NSCharacterSet *encodeUrlSet = [NSCharacterSet URLQueryAllowedCharacterSet];
+    NSString *fileName = [filePath stringByAddingPercentEncodingWithAllowedCharacters:encodeUrlSet];
+    NSURL *fileURL = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@",fileName]];
+    if(fileURL == nil){
+       callback(@[[NSNull null]]);
+       return;
+    }
     self.callback = callback;
     dispatch_async(dispatch_get_main_queue(), ^{
       UIDocumentPickerViewController *documentPicker = [[UIDocumentPickerViewController alloc] initWithURL:fileURL inMode:UIDocumentPickerModeExportToService];
