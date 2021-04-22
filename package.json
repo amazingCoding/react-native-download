@@ -1,5 +1,5 @@
 {
-  "name": "react-native-download-file",
+  "name": "react-native-download",
   "version": "0.1.0",
   "description": "download",
   "main": "lib/commonjs/index",

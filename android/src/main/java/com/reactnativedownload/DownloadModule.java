@@ -45,7 +45,9 @@ public class DownloadModule extends ReactContextBaseJavaModule {
     request.allowScanningByMediaScanner();
     DownloadManager downloadManager = (DownloadManager) reactContext.getSystemService(Context.DOWNLOAD_SERVICE);
     long downloadId = downloadManager.enqueue(request);
+
     reactContext.getContentResolver().registerContentObserver(Uri.parse("content://downloads/my_downloads"), true, new ContentObserver(new Handler()) {
+      boolean flag = false;
       @Override
       public void onChange(boolean selfChange, Uri uri) {
         DownloadManager.Query query = new DownloadManager.Query().setFilterById(downloadId);
@@ -53,14 +55,18 @@ public class DownloadModule extends ReactContextBaseJavaModule {
           if (cursor != null && cursor.moveToFirst()) {
             switch (cursor.getInt(cursor.getColumnIndex((DownloadManager.COLUMN_STATUS)))){
               case DownloadManager.STATUS_FAILED:
+                if(flag) return;
                 reactContext.getContentResolver().unregisterContentObserver(this);
                 callback.invoke();
                 cursor.close();
+                flag = true;
                 break;
               case DownloadManager.STATUS_SUCCESSFUL:
+                if(flag) return;
                 reactContext.getContentResolver().unregisterContentObserver(this);
                 callback.invoke("success");
                 cursor.close();
+                flag = true;
                 break;
               default:
                 break;
