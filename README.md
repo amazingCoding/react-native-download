@@ -30,3 +30,11 @@ Android need AndroidManifest
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 ```
+
+## gif
+### IOS
+![](./ios.gif)
+
+### android
+
+![](./android.gif)
