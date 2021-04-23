@@ -7,6 +7,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
+import android.util.Log;
+import android.webkit.MimeTypeMap;
 
 import androidx.annotation.NonNull;
 
@@ -37,6 +39,11 @@ public class DownloadModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void downloadFile(String url, String name, Callback callback) {
     DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+
+    if(!name.contains(".")){
+      String fileExtension = MimeTypeMap.getFileExtensionFromUrl(url);
+      name = name.concat("." + fileExtension);
+    }
     request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
     request.setTitle(name);
     request.setVisibleInDownloadsUi(true);
