@@ -12,7 +12,7 @@
 
 RCT_EXPORT_MODULE()
 RCT_EXPORT_METHOD(downloadFile:(NSString *)url name:(NSString *)name callback:(RCTResponseSenderBlock)callback){
-  self.task =  [NSURLSession.sharedSession downloadTaskWithURL:[NSURL URLWithString:url] completionHandler:^(NSURL * _Nullable location, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    self.task =  [NSURLSession.sharedSession downloadTaskWithURL:[NSURL URLWithString:url] completionHandler:^(NSURL * _Nullable location, NSURLResponse * _Nullable response, NSError * _Nullable error) {
     if(error){
       callback(@[[NSNull null]]);
       return;
@@ -20,6 +20,30 @@ RCT_EXPORT_METHOD(downloadFile:(NSString *)url name:(NSString *)name callback:(R
     // move file
     NSString *docDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
     NSString *filePath = [docDir stringByAppendingPathComponent:name];
+        NSRange range = [filePath rangeOfString:@"."];
+        if(range.location == NSNotFound && response.MIMEType){
+            if([response.MIMEType isEqual:@"application/pdf"]){
+                filePath = [filePath stringByAppendingFormat:@".pdf"];
+            }
+            else if([response.MIMEType isEqual:@"application/msword"]){
+                filePath = [filePath stringByAppendingFormat:@".doc"];
+            }
+            else if([response.MIMEType isEqual:@"application/vnd.ms-powerpoint"]){
+                filePath = [filePath stringByAppendingFormat:@".ppt"];
+            }
+            else if([response.MIMEType isEqual:@"application/vnd.ms-excel"]){
+                filePath = [filePath stringByAppendingFormat:@".xls"];
+            }
+            else if([response.MIMEType isEqual:@"application/vnd.openxmlformats-officedocument.presentationml.presentation"]){
+                filePath = [filePath stringByAppendingFormat:@".pptx"];
+            }
+            else if([response.MIMEType isEqual:@"application/vnd.openxmlformats-officedocument.wordprocessingml.document"]){
+                filePath = [filePath stringByAppendingFormat:@".docx"];
+            }
+            else if([response.MIMEType isEqual:@"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]){
+                filePath = [filePath stringByAppendingFormat:@".xlsx"];
+            }
+        }
     NSError *err = nil;
     if ( [[NSFileManager defaultManager] fileExistsAtPath:filePath] ) {
         [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
@@ -29,6 +53,7 @@ RCT_EXPORT_METHOD(downloadFile:(NSString *)url name:(NSString *)name callback:(R
       callback(@[[NSNull null]]);
       return;
     }
+      
     NSCharacterSet *encodeUrlSet = [NSCharacterSet URLQueryAllowedCharacterSet];
     NSString *fileName = [filePath stringByAddingPercentEncodingWithAllowedCharacters:encodeUrlSet];
     NSURL *fileURL = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@",fileName]];
@@ -44,9 +69,9 @@ RCT_EXPORT_METHOD(downloadFile:(NSString *)url name:(NSString *)name callback:(R
       UIViewController *rootViewController = RCTPresentedViewController();
       [rootViewController presentViewController:documentPicker animated:YES completion:nil];
     });
-    
-  }];
-  [self.task resume];
+
+    }];
+    [self.task resume];
   
 }
 - (void)documentPickerWasCancelled:(UIDocumentPickerViewController *)controller{

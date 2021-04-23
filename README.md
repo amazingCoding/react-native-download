@@ -6,7 +6,7 @@ download
 add this in package.json "dependencies"
 
 ```sh
-"react-native-download-file": "git@github.com:amazingCoding/react-native-download.git#a37a89321d16b0ec775af5ddbe4725caf2465716",
+"react-native-download-file": "git@github.com:amazingCoding/react-native-download.git#[git-hash]",
 ```
 
 ## Usage

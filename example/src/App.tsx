@@ -12,7 +12,7 @@ export default function App() {
   const download = React.useCallback(async () => {
     if (state === "downloading") return
     setState("downloading")
-    const res = await DownloadFile('https://static.mokeycode.com/app/1.jpeg', '松花江.jpeg')
+    const res = await DownloadFile('https://static.mokeycode.com/app/1.xlsx', '松花江X')
     setState(res ? 'success' : 'cancel')
   }, [state])
 
